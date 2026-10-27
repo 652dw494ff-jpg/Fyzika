@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fyzika • Rychlé procvičování</title>
+<style>
+:root{color-scheme:light;--bg:#f4f6fb;--card:#fff;--text:#182033;--muted:#65708a;--accent:#3867f4;--accent2:#e8eeff;--good:#16794b;--bad:#b42318;--line:#e2e7f0}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{background:linear-gradient(135deg,#172554,#3867f4);color:white;padding:26px 18px 34px}header .wrap,main{max-width:850px;margin:auto}
+.kicker{font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.8;font-weight:700}
+h1{font-size:clamp(28px,6vw,42px);line-height:1.1;margin:8px 0}header p{margin:10px 0 0;color:#e5eaff}
+main{padding:18px;display:grid;gap:16px}.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 8px 24px #1725540a}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.pill{background:var(--accent2);color:#2548b9;border-radius:99px;padding:5px 10px;font-size:13px;font-weight:700}
+.progress{height:8px;background:#e9edf5;border-radius:99px;overflow:hidden;margin:14px 0 20px}.progress div{height:100%;width:0;background:var(--accent);transition:width .25s}
+h2{font-size:21px;margin:0 0 14px}.question{font-size:20px;font-weight:750;margin:6px 0 18px}
+.answers{display:grid;gap:10px}.answer{width:100%;text-align:left;border:1px solid var(--line);border-radius:13px;background:white;padding:13px 14px;font:inherit;color:var(--text);cursor:pointer;transition:.15s}.answer:hover{border-color:var(--accent);background:#f7f9ff}.answer:focus-visible,button:focus-visible,select:focus-visible{outline:3px solid #a8bbff;outline-offset:2px}.answer.correct{border-color:#64b58b;background:#eaf8f0}.answer.wrong{border-color:#e49a96;background:#fff0ef}.answer:disabled{cursor:default}
+.feedback{padding:13px 14px;border-radius:12px;margin-top:14px;background:#f3f5fa}.feedback.good{background:#eaf8f0;color:#135e3b}.feedback.bad{background:#fff0ef;color:#922018}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}button.primary,button.secondary{border:0;border-radius:12px;padding:12px 16px;font:inherit;font-weight:700;cursor:pointer}button.primary{background:var(--accent);color:white}button.primary:disabled{opacity:.4;cursor:not-allowed}button.secondary{background:#eef1f7;color:#28334d}
+select{border:1px solid var(--line);border-radius:10px;padding:9px;background:white;color:var(--text);font:inherit}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{background:#f7f8fc;border-radius:14px;padding:12px}.stat strong{display:block;font-size:24px}.stat span{color:var(--muted);font-size:13px}
+.small{color:var(--muted);font-size:14px}.hidden{display:none}.summary-list{padding-left:20px}.summary-list li{margin:7px 0}
+footer{text-align:center;color:var(--muted);font-size:13px;padding:0 18px 28px}
+@media(max-width:520px){main{padding:12px}.panel{padding:16px}.stats{grid-template-columns:repeat(3,1fr)}.stat{padding:10px 8px}.stat strong{font-size:21px}.question{font-size:18px}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<div class="kicker">Fyzika · 9. ročník</div>
+<h1>⚡ Rychlé procvičování</h1>
+<p>Elektrický náboj, atomy a ionty, elektrování, elektroskop, proud a Ohmův zákon.</p>
+</div></header>
+<main>
+<section class="panel">
+<div class="topline"><span class="pill" id="topic">Všechny okruhy</span><span class="small" id="counter">Otázka 1 z 20</span></div>
+<div class="progress"><div id="bar"></div></div>
+<div class="topline" style="margin-bottom:10px">
+<label for="filter"><strong>Procvičovat:</strong></label>
+<select id="filter">
+<option value="all">Všechno</option><option value="Náboj">Elektrický náboj</option><option value="Atom a ionty">Atom a ionty</option><option value="Elektrování">Elektrování</option><option value="Elektroskop">Elektroskop</option><option value="Proud">Elektrický proud</option><option value="Ohmův zákon">Ohmův zákon</option>
+</select>
+</div>
+<div id="quiz">
+<div class="question" id="question"></div>
+<div class="answers" id="answers"></div>
+<div id="feedback" class="feedback hidden" aria-live="polite"></div>
+<div class="actions"><button class="primary" id="next" disabled>Další otázka →</button><button class="secondary" id="restart">Začít znovu</button></div>
+</div>
+<div id="finish" class="hidden">
+<h2>Hotovo! 🎉</h2><p id="resultText"></p>
+<div class="stats"><div class="stat"><strong id="scoreStat">0/0</strong><span>Správně</span></div><div class="stat"><strong id="percentStat">0 %</strong><span>Úspěšnost</span></div><div class="stat"><strong id="wrongStat">0</strong><span>Chyby</span></div></div>
+<h3>Co si zopakovat</h3><ul id="review" class="summary-list"></ul>
+<div class="actions"><button class="primary" id="again">Procvičit znovu</button></div>
+</div>
+</section>
+<section class="panel">
+<h2>📌 Tahák ke značkám</h2>
+<div class="stats">
+<div class="stat"><strong>Q</strong><span>Náboj · coulomb (C)</span></div>
+<div class="stat"><strong>I</strong><span>Proud · ampér (A)</span></div>
+<div class="stat"><strong>U</strong><span>Napětí · volt (V)</span></div>
+<div class="stat"><strong>R</strong><span>Odpor · ohm (Ω)</span></div>
+<div class="stat"><strong>t</strong><span>Čas · sekunda (s)</span></div>
+<div class="stat"><strong>e⁻</strong><span>Elektron · záporný</span></div>
+</div>
+<p style="margin-bottom:0"><strong>Vzorce:</strong> I = Q / t &nbsp; · &nbsp; I = U / R &nbsp; · &nbsp; U = I · R &nbsp; · &nbsp; R = U / I</p>
+</section>
+</main>
+<footer>Tip: Když odpovíš špatně, přečti si vysvětlení a zkus si zapamatovat proč. 💡</footer>
+<script>
+const bank = [
+{topic:"Náboj",q:"Které elektrické náboje se navzájem odpuzují?",a:["Kladný a záporný","Dva kladné nebo dva záporné","Každé náboje se přitahují","Náboje na sebe nepůsobí"],c:1,e:"Stejné náboje se odpuzují (+/+ nebo −/−); opačné se přitahují."},
+{topic:"Náboj",q:"Jaká je jednotka elektrického náboje?",a:["Ampér (A)","Volt (V)","Ohm (Ω)","Coulomb (C)"],c:3,e:"Elektrický náboj Q měříme v coulombech (C)."},
+{topic:"Náboj",q:"Která částice má záporný náboj?",a:["Proton","Neutron","Elektron","Jádro"],c:2,e:"Elektron má záporný náboj, proton kladný a neutron žádný."},
+{topic:"Atom a ionty",q:"Kdy je atom elektricky neutrální?",a:["Nemá protony ani elektrony","Má stejně protonů a elektronů","Má více elektronů než protonů","Má více protonů než elektronů"],c:1,e:"Kladné náboje protonů a záporné náboje elektronů se vyruší, když je jich stejně."},
+{topic:"Atom a ionty",q:"Atom odevzdá elektron. Jaký iont vznikne, pokud byl předtím neutrální?",a:["Záporný aniont","Kladný kationt","Neutron","Vždy neutrální atom"],c:1,e:"Ztrátou záporného elektronu převládne kladný náboj: vzniká kationt."},
+{topic:"Atom a ionty",q:"Atom přijme elektron. Jaký iont vznikne, pokud byl předtím neutrální?",a:["Kladný kationt","Záporný aniont","Proton","Neutrální neutron"],c:1,e:"Přijetím záporného elektronu vzniká aniont."},
+{topic:"Atom a ionty",q:"Atom má 11 protonů a 10 elektronů. Jaký má výsledný náboj?",a:["−1","0","+1","+10"],c:2,e:"Jeden kladný náboj přebývá: 11 protonů a 10 elektronů znamená náboj +1."},
+{topic:"Elektrování",q:"Co se při elektrování běžně přesouvá z jednoho tělesa na druhé?",a:["Protony","Elektrony","Neutrony","Celá atomová jádra"],c:1,e:"Při běžném elektrování se přesouvají elektrony; protony zůstávají v jádře."},
+{topic:"Elektrování",q:"Dvě tělesa třeme o sebe a elektrony přecházejí mezi nimi. Jak se tomu říká?",a:["Elektrování třením","Elektrování dotykem","Indukce","Uzemnění"],c:0,e:"Při elektrování třením mohou elektrony přejít z jednoho tělesa na druhé."},
+{topic:"Elektrování",q:"Přiblížíme nabité těleso k jinému tělesu, aniž se ho dotkneme. Jaký je to způsob?",a:["Tření","Dotyk","Indukce","Zahřívání"],c:2,e:"Indukce je elektrické působení bez přímého dotyku."},
+{topic:"Elektrování",q:"Co platí o elektrickém náboji při elektrování?",a:["Vzniká z ničeho","Vždy zmizí","Přenáší se mezi tělesy","Přesouvají se protony mezi jádry"],c:2,e:"Elektrický náboj se přenáší; nevzniká z ničeho ani se neztrácí."},
+{topic:"Elektroskop",q:"K čemu slouží elektroskop?",a:["K měření teploty","Ke zjištění, zda je těleso nabité","K měření času","K měření odporu"],c:1,e:"Elektroskop zjišťuje přítomnost elektrického náboje."},
+{topic:"Elektroskop",q:"Proč se lístky nabitého elektroskopu od sebe oddalují?",a:["Přitahují se","Mají náboje stejného znaménka a odpuzují se","Zahřívají se","Mění se na protony"],c:1,e:"Stejné náboje se odpuzují, a proto se lístky rozestoupí."},
+{topic:"Proud",q:"Jaká je značka elektrického proudu a jeho jednotka?",a:["U, volt (V)","I, ampér (A)","R, ohm (Ω)","Q, coulomb (C)"],c:1,e:"Proud značíme I a měříme ho v ampérech (A)."},
+{topic:"Proud",q:"Co vyjadřuje elektrický proud?",a:["Odpor tělesa","Uspořádaný pohyb elektricky nabitých částic","Teplotu vodiče","Počet neutronů v atomu"],c:1,e:"Elektrický proud je uspořádaný pohyb elektricky nabitých částic."},
+{topic:"Proud",q:"Vodičem projde náboj 20 C za 5 s. Jaký proud protéká?",a:["4 A","25 A","100 A","0,25 A"],c:0,e:"I = Q / t = 20 / 5 = 4 A."},
+{topic:"Ohmův zákon",q:"Jaká je značka napětí a jeho jednotka?",a:["I, ampér (A)","U, volt (V)","R, ohm (Ω)","Q, coulomb (C)"],c:1,e:"Napětí značíme U a měříme ve voltech (V)."},
+{topic:"Ohmův zákon",q:"Napětí je 12 V a odpor 4 Ω. Jaký je proud?",a:["3 A","8 A","16 A","48 A"],c:0,e:"I = U / R = 12 / 4 = 3 A."},
+{topic:"Ohmův zákon",q:"Proud je 2 A a odpor 6 Ω. Jaké je napětí?",a:["3 V","8 V","12 V","4 V"],c:2,e:"U = I · R = 2 · 6 = 12 V."},
+{topic:"Ohmův zákon",q:"Napětí je 18 V a proud 3 A. Jaký je odpor?",a:["6 Ω","15 Ω","21 Ω","54 Ω"],c:0,e:"R = U / I = 18 / 3 = 6 Ω."},
+{topic:"Ohmův zákon",q:"Když se napětí zvětší a odpor zůstane stejný, co se stane s proudem?",a:["Zmenší se","Nezmění se","Zvětší se","Bude vždy záporný"],c:2,e:"Podle I = U / R při stejném odporu větší napětí znamená větší proud."}
+];
+let questions=[],idx=0,score=0,missed=[],answered=false;
+const $=id=>document.getElementById(id);
+function shuffle(arr){return [...arr].sort(()=>Math.random()-.5)}
+function start(){const f=$("filter").value;questions=shuffle(bank.filter(x=>f==="all"||x.topic===f));idx=0;score=0;missed=[];answered=false;$("quiz").classList.remove("hidden");$("finish").classList.add("hidden");render()}
+function render(){
+ answered=false;const q=questions[idx];$("topic").textContent=q.topic;$("counter").textContent=`Otázka ${idx+1} z ${questions.length}`;$("bar").style.width=`${idx/questions.length*100}%`;
+ $("question").textContent=q.q;$("answers").innerHTML="";$("feedback").className="feedback hidden";$("feedback").textContent="";$("next").disabled=true;$("next").textContent=idx===questions.length-1?"Zobrazit výsledek →":"Další otázka →";
+ q.a.forEach((txt,i)=>{const b=document.createElement("button");b.className="answer";b.textContent=String.fromCharCode(65+i)+") "+txt;b.onclick=()=>choose(i);$("answers").appendChild(b)});
+}
+function choose(n){if(answered)return;answered=true;const q=questions[idx];const buttons=[...$("answers").children];buttons.forEach((b,i)=>{b.disabled=true;if(i===q.c)b.classList.add("correct");if(i===n&&n!==q.c)b.classList.add("wrong")});
+ if(n===q.c){score++;$("feedback").className="feedback good";$("feedback").textContent="✅ Správně! "+q.e}else{$("feedback").className="feedback bad";$("feedback").textContent="❌ To nevadí. "+q.e;missed.push(q.topic+": "+q.q)}
+ $("next").disabled=false;$("bar").style.width=`${(idx+1)/questions.length*100}%`;
+}
+function next(){if(!answered)return;if(idx<questions.length-1){idx++;render()}else finish()}
+function finish(){$("quiz").classList.add("hidden");$("finish").classList.remove("hidden");$("scoreStat").textContent=`${score}/${questions.length}`;$("percentStat").textContent=Math.round(score/questions.length*100)+" %";$("wrongStat").textContent=questions.length-score;$("resultText").textContent=score===questions.length?"Perfektní! Všechny odpovědi máš správně. 🏆":score/questions.length>=.75?"Paráda! Základům rozumíš, stačí doladit pár detailů. 💪":"Dobrá práce, že procvičuješ. Zopakuj si témata níže a dej si další kolo. 🌟";$("review").innerHTML="";const items=missed.length?missed:["Bez chyb — můžeš zkusit jiný okruh nebo další kolo!"];items.forEach(x=>{const li=document.createElement("li");li.textContent=x;$("review").appendChild(li)})}
+$("next").onclick=next;$("restart").onclick=start;$("again").onclick=start;$("filter").onchange=start;start();
+</script>
+</body></html>
